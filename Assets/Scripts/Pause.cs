@@ -10,9 +10,14 @@ public class Pause : MonoBehaviour
     public static Pause Instance;
 
     public Button pauseButton;
+    public Sprite pauseSprite;
+    public Sprite playSprite;
+
 
     private bool isPaused = false;
     private float fadeDuration = 1.0f;
+
+    private Image buttonImage;
 
     private void Awake()
     {
@@ -20,6 +25,9 @@ public class Pause : MonoBehaviour
         else Destroy(gameObject);
 
         pauseButton.onClick.AddListener(TogglePause);
+
+        buttonImage = pauseButton.GetComponent<Image>();
+        buttonImage.sprite = pauseSprite;
     }
 
     public void TogglePause()
@@ -48,6 +56,7 @@ public class Pause : MonoBehaviour
 
         Time.timeScale = 0;
         isPaused = true;
+        buttonImage.sprite = playSprite;
    }
 
 
@@ -57,6 +66,8 @@ public class Pause : MonoBehaviour
         Time.timeScale = 1;
         AudioManager.Instance.FadeInAllAudio(fadeDuration);
         isPaused = false;
+        buttonImage.sprite = pauseSprite;
+
     }
 
 }
