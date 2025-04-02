@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
         if(Mathf.Abs(swipe.x) > Mathf.Abs(swipe.y))
         {
             dir = swipe.x > 0 ? Vector2.right : Vector2.left;
-            dirName = swipe.y > 0 ? "right" : "left";
+            dirName = swipe.x > 0 ? "right" : "left";
         }
         else
         {
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
         moveCoroutine = StartCoroutine(MovePlayer(dir));
-        //play audio here
+        AudioManager.Instance.PlayNarrtion(dirName);
     }
 
     IEnumerator MovePlayer(Vector2 dir)
