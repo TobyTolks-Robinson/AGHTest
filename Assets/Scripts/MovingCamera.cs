@@ -5,23 +5,37 @@ using UnityEngine;
 public class MovingCamera : MonoBehaviour
 {
     public Transform target;
-    public float followSpeed = 2.0f;
-    public Vector2 bounds = new Vector2(4.0f, 2.0f);
+    public float moveSpeed = 5.0f; 
 
-    private void LateUpdate()
+    private Camera cam;
+
+    void Start()
     {
-        if (!target) return;
+        cam = GetComponent<Camera>();
+    }
 
-        Vector3 diff = target.position - transform.position;
-        Vector3 newPos = transform.position;
+    void LateUpdate()
+    {
+        if (!target || !cam) return;
 
-        if (Mathf.Abs(diff.x) > bounds.x)
-            newPos.x = Mathf.Lerp(transform.position.x, target.position.x, Time.deltaTime * followSpeed);
+        float halfHeight = cam.orthographicSize;
+        float halfWidth = halfHeight * cam.aspect;
 
-        if (Mathf.Abs(diff.y) > bounds.y)
-            newPos.y = Mathf.Lerp(transform.position.y, target.position.y, Time.deltaTime * followSpeed);
+        Vector3 camPos = transform.position;
+        Vector3 targetPos = target.position;
 
-        newPos.z = transform.position.z;
-        transform.position = newPos;
+        float leftBound = camPos.x - halfWidth;
+        float rightBound = camPos.x + halfWidth;
+        float bottomBound = camPos.y - halfHeight;
+        float topBound = camPos.y + halfHeight;
+
+        bool isOutsideX = targetPos.x < leftBound || targetPos.x > rightBound;
+        bool isOutsideY = targetPos.y < bottomBound || targetPos.y > topBound;
+
+        if (isOutsideX || isOutsideY)
+        {
+            Vector3 desiredPosition = new Vector3(targetPos.x, targetPos.y, camPos.z);
+            transform.position = new Vector3(targetPos.x, targetPos.y, camPos.z);
+        }
     }
 }
